@@ -13,6 +13,10 @@ let state = {
     charts: {},
     usedVocabulary: new Set(),
     dictOpen: false,
+    structActive: false,
+    structQuestion: 0,
+    structTotal: 0,
+    structResponses: [],
 };
 
 const MODULE_NAMES = {
@@ -253,9 +257,10 @@ async function renderDictResults(query) {
     }
 
     try {
-        const langpair = isEnEs ? 'en|es' : 'es|en';
         const [transRes, dictRes] = await Promise.all([
-            fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(q)}&langpair=${langpair}`).then(r => r.json()).catch(() => null),
+            isEnEs
+                ? fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=es&dt=t&q=${encodeURIComponent(q)}`).then(r => r.json()).catch(() => null)
+                : fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=en&dt=t&q=${encodeURIComponent(q)}`).then(r => r.json()).catch(() => null),
             isEnEs
                 ? fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(q)}`).then(r => r.json()).catch(() => null)
                 : Promise.resolve(null)
@@ -263,9 +268,11 @@ async function renderDictResults(query) {
 
         const entries = [];
 
-        if (transRes && transRes.responseData && transRes.responseData.translatedText) {
-            const t = transRes.responseData.translatedText;
-            entries.push(isEnEs ? { en: q, es: t, source: 'api' } : { en: t, es: q, source: 'api' });
+        if (transRes && transRes[0] && transRes[0][0] && transRes[0][0][0]) {
+            const t = transRes[0][0][0];
+            if (t.toLowerCase() !== q) {
+                entries.push(isEnEs ? { en: q, es: t, source: 'api' } : { en: t, es: q, source: 'api' });
+            }
         }
 
         if (dictRes && Array.isArray(dictRes)) {
@@ -275,13 +282,18 @@ async function renderDictResults(query) {
                         if (m.definitions) {
                             m.definitions.slice(0, 2).forEach(d => {
                                 if (d.definition) {
-                                    entries.push({ en: q, es: `(${m.partOfSpeech}) ${d.definition}`, source: 'def' });
+                                    const example = d.example ? ` Ej: ${d.example}` : '';
+                                    entries.push({ en: q, es: `(${m.partOfSpeech}) ${d.definition}${example}`, source: 'def' });
                                 }
                             });
                         }
                     });
                 }
             });
+        }
+
+        if (!entries.length && dictRes && dictRes.title === "No Definitions Found") {
+            entries.push({ en: q, es: `(sin traducci\u00f3n en el diccionario)`, source: 'def' });
         }
 
         if (entries.length) {
@@ -331,6 +343,7 @@ function initNavigation() {
     document.getElementById('btn-speech').addEventListener('click', toggleRecording);
     document.getElementById('btn-stop-speech').addEventListener('click', stopRecording);
     document.getElementById('btn-suggest-phrase').addEventListener('click', suggestPhrase);
+    document.getElementById('btn-structured').addEventListener('click', startStructuredPractice);
     document.getElementById('verb-select').addEventListener('change', loadConjugationTable);
     document.getElementById('tense-select').addEventListener('change', loadConjugationTable);
     document.getElementById('btn-submit-test').addEventListener('click', submitTest);
@@ -634,11 +647,18 @@ async function loadTopics(moduleId = null) {
         const btn = document.getElementById('btn-speech');
         const input = document.getElementById('chat-input');
         const sendBtn = document.getElementById('btn-send');
+        state.structActive = false;
+        state.structQuestion = 0;
+        state.structTotal = 0;
+        state.structResponses = [];
+        document.getElementById('structured-progress').classList.add('hidden');
+        document.getElementById('struct-summary').classList.add('hidden');
 
         if (topics.length === 0) {
             list.innerHTML = '<p class="text-muted">No hay temas para este m\u00f3dulo.</p>';
             btn.disabled = true; input.disabled = true; sendBtn.disabled = true;
             document.getElementById('btn-suggest-phrase').disabled = true;
+            document.getElementById('btn-structured').disabled = true;
             return;
         }
 
@@ -657,12 +677,19 @@ async function selectTopic(topicId) {
         state.currentTopic = topic;
         state.chatHistory = [];
         state.usedVocabulary = new Set();
+        state.structActive = false;
+        state.structQuestion = 0;
+        state.structTotal = 0;
+        state.structResponses = [];
         document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('active'));
         document.querySelector(`.topic-item[data-id="${topicId}"]`)?.classList.add('active');
         document.getElementById('key-phrases').innerHTML =
             topic.key_phrases.map(p => `<span class="phrase-chip">${p}</span>`).join('');
         updateVocabTracker();
         document.getElementById('btn-suggest-phrase').disabled = false;
+        document.getElementById('btn-structured').disabled = false;
+        document.getElementById('structured-progress').classList.add('hidden');
+        document.getElementById('struct-summary').classList.add('hidden');
 
         const chatBox = document.getElementById('chat-box');
         chatBox.innerHTML = `
@@ -683,12 +710,77 @@ async function sendChatMessage() {
     addChatMessage('user', text);
     trackVocabulary(text);
     document.getElementById('speech-result').classList.add('hidden');
+
+    if (state.structActive) {
+        try {
+            const resp = await api.structuredChat(state.currentTopic.id, text, state.structQuestion, state.structResponses);
+            state.structResponses = resp.responses;
+            if (resp.is_completed) {
+                state.structActive = false;
+                document.getElementById('structured-progress').classList.add('hidden');
+                showStructSummary(resp.summary);
+                addChatMessage('assistant', resp.content);
+                speak(resp.content);
+            } else {
+                state.structQuestion = resp.current_question;
+                updateStructProgress();
+                showGrammarCorrection(resp.grammar_correction, resp.grammar_changes, resp.has_grammar_errors);
+                addChatMessage('assistant', resp.content);
+                speak(resp.content);
+            }
+        } catch { addChatMessage('assistant', 'Lo siento, hubo un error de conexi\u00f3n.'); }
+        return;
+    }
+
     try {
         const response = await api.chat(state.currentTopic.id, text);
         addChatMessage('assistant', response.content);
         showGrammarCorrection(response.grammar_correction, response.grammar_changes, response.has_grammar_errors);
         speak(response.content);
     } catch { addChatMessage('assistant', 'Lo siento, hubo un error de conexi\u00f3n.'); }
+}
+
+async function startStructuredPractice() {
+    if (!state.currentTopic) return;
+    state.structActive = true;
+    state.structQuestion = 0;
+    state.structResponses = [];
+    document.getElementById('struct-summary').classList.add('hidden');
+    document.getElementById('structured-progress').classList.remove('hidden');
+    document.getElementById('chat-box').innerHTML = '';
+    try {
+        const resp = await api.startConversation(state.currentTopic.id);
+        state.structQuestion = resp.current_question;
+        state.structTotal = resp.total_questions;
+        updateStructProgress();
+        addChatMessage('assistant', resp.question);
+        speak(resp.question);
+    } catch {
+        state.structActive = false;
+        document.getElementById('structured-progress').classList.add('hidden');
+        addChatMessage('assistant', 'Error al iniciar la pr\u00e1ctica.');
+    }
+}
+
+function updateStructProgress() {
+    const fill = document.getElementById('struct-progress-fill');
+    const text = document.getElementById('struct-progress-text');
+    const pct = state.structTotal > 0 ? (state.structQuestion / state.structTotal) * 100 : 0;
+    fill.style.width = Math.min(pct, 100) + '%';
+    text.textContent = `${state.structQuestion}/${state.structTotal}`;
+}
+
+function showStructSummary(summary) {
+    const el = document.getElementById('struct-summary');
+    el.innerHTML = `
+        <h4>&#x1F3C6; Pr&aacute;ctica completada</h4>
+        <p>${summary.message}</p>
+        <div class="stat-row">
+            <span>Preguntas: ${summary.total_questions}</span>
+            <span>Errores: ${summary.grammar_errors}</span>
+            <span>Prom. palabras: ${summary.average_word_count}</span>
+        </div>`;
+    el.classList.remove('hidden');
 }
 
 function showGrammarCorrection(corrected, changes, hasErrors) {

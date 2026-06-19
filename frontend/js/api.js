@@ -70,4 +70,8 @@ const api = {
     updateMyScore: (moduleId, score) => apiPost('/progress/me/update-score', { module_id: moduleId, score }),
     recordPracticeSession: (durationSeconds) => apiPost('/progress/me/practice-session', { duration_seconds: durationSeconds }),
     getMyRecommendations: () => apiGet('/progress/me/recommendations'),
+
+    startConversation: (topicId) => apiPost(`/conversation/start/${topicId}`),
+    structuredChat: (topicId, content, currentQuestion, responses) =>
+        apiPost(`/conversation/structured/${topicId}`, { role: 'user', content, current_question: currentQuestion, responses }),
 };

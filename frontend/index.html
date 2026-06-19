@@ -169,6 +169,10 @@
                             style="font-size:0.85rem;padding:8px 12px;" disabled>
                             &#x1F4A1; Sugerir frase
                         </button>
+                        <button id="btn-structured" class="btn btn-accent"
+                            style="font-size:0.85rem;padding:8px 12px;margin-top:8px;width:100%;" disabled>
+                            &#x1F3AF; Pr&aacute;ctica Guiada
+                        </button>
                     </div>
                     <div class="conversation-main">
                         <div id="chat-box" class="chat-box">
@@ -201,6 +205,11 @@
                             <p class="feedback" id="speech-feedback"></p>
                             <ul id="speech-improvements" class="improvements"></ul>
                         </div>
+                        <div id="structured-progress" class="structured-progress hidden">
+                            <div class="struct-progress-bar"><div id="struct-progress-fill" class="struct-progress-fill"></div></div>
+                            <span id="struct-progress-text" class="struct-progress-text">0/0</span>
+                        </div>
+                        <div id="struct-summary" class="struct-summary hidden"></div>
                         <div id="grammar-correction-box" class="grammar-box hidden">
                             <p><strong>Correcci&oacute;n:</strong> <span id="corrected-text"></span>
                                 <button onclick="playCorrected()" class="btn-play"
