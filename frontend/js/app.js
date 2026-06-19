@@ -16,6 +16,7 @@ let state = {
     structActive: false,
     structQuestion: 0,
     structTotal: 0,
+    structFollowUp: 0,
     structResponses: [],
 };
 
@@ -650,6 +651,7 @@ async function loadTopics(moduleId = null) {
         state.structActive = false;
         state.structQuestion = 0;
         state.structTotal = 0;
+        state.structFollowUp = 0;
         state.structResponses = [];
         document.getElementById('structured-progress').classList.add('hidden');
         document.getElementById('struct-summary').classList.add('hidden');
@@ -680,6 +682,7 @@ async function selectTopic(topicId) {
         state.structActive = false;
         state.structQuestion = 0;
         state.structTotal = 0;
+        state.structFollowUp = 0;
         state.structResponses = [];
         document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('active'));
         document.querySelector(`.topic-item[data-id="${topicId}"]`)?.classList.add('active');
@@ -713,7 +716,7 @@ async function sendChatMessage() {
 
     if (state.structActive) {
         try {
-            const resp = await api.structuredChat(state.currentTopic.id, text, state.structQuestion, state.structResponses);
+            const resp = await api.structuredChat(state.currentTopic.id, text, state.structQuestion, state.structFollowUp, state.structResponses);
             state.structResponses = resp.responses;
             if (resp.is_completed) {
                 state.structActive = false;
@@ -723,10 +726,15 @@ async function sendChatMessage() {
                 speak(resp.content);
             } else {
                 state.structQuestion = resp.current_question;
+                state.structFollowUp = resp.follow_up_count || 0;
                 updateStructProgress();
                 showGrammarCorrection(resp.grammar_correction, resp.grammar_changes, resp.has_grammar_errors);
-                addChatMessage('assistant', resp.content);
+                let label = resp.is_follow_up ? '[Seguimiento] ' : '';
+                addChatMessage('assistant', label + resp.content);
                 speak(resp.content);
+                if (resp.relevance) {
+                    showRelevanceFeedback(resp.relevance);
+                }
             }
         } catch { addChatMessage('assistant', 'Lo siento, hubo un error de conexi\u00f3n.'); }
         return;
@@ -744,6 +752,7 @@ async function startStructuredPractice() {
     if (!state.currentTopic) return;
     state.structActive = true;
     state.structQuestion = 0;
+    state.structFollowUp = 0;
     state.structResponses = [];
     document.getElementById('struct-summary').classList.add('hidden');
     document.getElementById('structured-progress').classList.remove('hidden');
@@ -781,6 +790,16 @@ function showStructSummary(summary) {
             <span>Prom. palabras: ${summary.average_word_count}</span>
         </div>`;
     el.classList.remove('hidden');
+}
+
+function showRelevanceFeedback(relevance) {
+    if (!relevance || relevance.score >= 0.4) return;
+    const chatBox = document.getElementById('chat-box');
+    const div = document.createElement('div');
+    div.className = 'chat-message system relevance-feedback';
+    div.innerHTML = `<div class="role-label">Tema</div><div>${relevance.message}</div>`;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 function showGrammarCorrection(corrected, changes, hasErrors) {

@@ -28,6 +28,7 @@ class StructuredChatRequest(BaseModel):
     role: str
     content: str
     current_question: int = 0
+    follow_up_count: int = 0
     session_id: Optional[str] = None
     responses: List[dict] = []
 
@@ -122,6 +123,73 @@ TOPIC_QUESTIONS = {
     ],
 }
 
+TOPIC_KEYWORDS = {
+    "conv-1": ["introduce", "name", "from", "student", "study", "work", "job",
+                "learn", "english", "hobby", "free time", "motivation", "colleague",
+                "meet", "department", "position"],
+    "conv-2": ["wake", "morning", "breakfast", "routine", "usually", "always",
+                "never", "sometimes", "often", "work", "school", "evening",
+                "go to bed", "shower", "coffee", "tea", "toast", "cereal"],
+    "conv-3": ["food", "like", "eat", "restaurant", "order", "cook", "home",
+                "favorite", "dinner", "lunch", "delicious", "menu", "waiter",
+                "bill", "recommend", "vegetarian", "dessert", "appetizer"],
+    "conv-4": ["vacation", "trip", "travel", "went", "visit", "country", "beach",
+                "mountain", "city", "hotel", "flight", "holiday", "summer",
+                "tourist", "museum", "beach", "pool", "adventure", "relax"],
+    "conv-5": ["weekend", "plan", "movie", "restaurant", "friend", "go out",
+                "stay home", "weather", "park", "walk", "dinner", "game",
+                "party", "visit", "shopping", "sport", "music", "concert"],
+}
+
+TOPIC_FOLLOW_UPS = {
+    "conv-1": [
+        "That's interesting! Can you tell me more about that?",
+        "How long have you been doing that?",
+        "Why do you enjoy it so much?",
+        "What is the most challenging part?",
+        "How did you get started with that?",
+    ],
+    "conv-2": [
+        "That sounds like a good routine! Is there anything you would like to change?",
+        "Do you follow the same routine on weekends?",
+        "What is your favorite part of the day?",
+        "How long have you had this routine?",
+    ],
+    "conv-3": [
+        "That sounds delicious! What do you like most about it?",
+        "Do you know how to prepare it yourself?",
+        "Would you recommend it to a friend? Why?",
+        "What other foods from that cuisine have you tried?",
+    ],
+    "conv-4": [
+        "That sounds amazing! What was the highlight of that experience?",
+        "Would you go back again? Why or why not?",
+        "What was the weather like during your trip?",
+        "Did you try any local food or activities?",
+    ],
+    "conv-5": [
+        "That sounds fun! Who are you going with?",
+        "How often do you do that?",
+        "What do you enjoy most about that activity?",
+        "Is there anything else you would like to try?",
+    ],
+}
+
+FOLLOW_UP_PATTERNS = [
+    (["like", "enjoy", "love", "favorite"], "What do you like most about it?"),
+    (["work", "job", "office", "company"], "What is your favorite part of your work?"),
+    (["study", "student", "school", "university", "class"], "What subject do you enjoy studying the most?"),
+    (["read", "book", "reading", "novel"], "What kind of books do you prefer to read?"),
+    (["music", "song", "sing", "guitar", "piano", "instrument"], "What kind of music do you like?"),
+    (["sport", "game", "play", "football", "soccer", "tennis", "swim", "run"], "How often do you practice that sport?"),
+    (["cook", "cooking", "kitchen", "recipe"], "What is your specialty dish?"),
+    (["travel", "visit", "trip", "vacation", "went", "country"], "What was the best part of your trip?"),
+    (["movie", "film", "watch", "cinema", "theater"], "What genre of movies do you prefer?"),
+    (["family", "mother", "father", "brother", "sister", "parent", "child"], "Do you spend a lot of time with your family?"),
+    (["friend", "friends"], "What do you like to do with your friends?"),
+    (["learn", "study", "practice", "english", "language"], "What is the most difficult part of learning English?"),
+]
+
 QUESTIONS_RESPONSES = {
     "greeting": ["Hello! How are you today?", "Hi there! Nice to see you.",
                   "Good day! How can I help you practice?"],
@@ -169,10 +237,12 @@ async def structured_chat(topic_id: str, body: StructuredChatRequest):
 
     questions = TOPIC_QUESTIONS[topic_id]
     q_idx = body.current_question
+    follow_up_count = body.follow_up_count
     responses = list(body.responses)
 
     grammar = await correct_sentence(body.content)
     score = _evaluate_response(body.content, q_idx, topic_id)
+    relevance = _evaluate_topic_relevance(body.content, topic_id)
 
     responses.append({
         "question": questions[q_idx] if 0 <= q_idx < len(questions) else "",
@@ -181,17 +251,20 @@ async def structured_chat(topic_id: str, body: StructuredChatRequest):
         "grammar_changes": grammar["changes"],
         "has_grammar_errors": grammar["has_errors"],
         "word_count": len(body.content.split()),
+        "is_follow_up": follow_up_count > 0,
+        "relevance_score": relevance["score"],
+        "relevance_message": relevance["message"],
     })
 
-    q_idx += 1
-
     if q_idx >= len(questions):
+        _maybe_fix_last_response(responses)
         summary = _generate_summary(responses)
         return {
             "role": "assistant",
             "content": summary["message"],
             "topic_id": topic_id,
             "current_question": -1,
+            "follow_up_count": 0,
             "total_questions": len(questions),
             "is_completed": True,
             "responses": responses,
@@ -200,16 +273,65 @@ async def structured_chat(topic_id: str, body: StructuredChatRequest):
             "grammar_correction": grammar["corrected"] if grammar["has_errors"] else None,
             "grammar_changes": grammar["changes"],
             "has_grammar_errors": grammar["has_errors"],
+            "is_follow_up": False,
         }
 
-    next_q = questions[q_idx]
-    feedback = _generate_response_feedback(score, grammar, body.content)
+    word_count = len(body.content.split())
+    max_follow_ups = 2 if word_count >= 5 else 1
+
+    if follow_up_count < max_follow_ups:
+        follow_up = _generate_follow_up(body.content, topic_id, follow_up_count)
+        next_follow_up_count = follow_up_count + 1
+        feedback = _generate_response_feedback(score, grammar, body.content, relevance)
+
+        return {
+            "role": "assistant",
+            "content": f"{feedback}\n\n{follow_up}",
+            "topic_id": topic_id,
+            "current_question": q_idx,
+            "follow_up_count": next_follow_up_count,
+            "total_questions": len(questions),
+            "is_completed": False,
+            "responses": responses,
+            "user_message": body.content,
+            "grammar_correction": grammar["corrected"] if grammar["has_errors"] else "",
+            "grammar_changes": grammar["changes"],
+            "has_grammar_errors": grammar["has_errors"],
+            "evaluation_score": score,
+            "is_follow_up": True,
+            "relevance": relevance,
+        }
+
+    next_q_idx = q_idx + 1
+    if next_q_idx >= len(questions):
+        _maybe_fix_last_response(responses)
+        summary = _generate_summary(responses)
+        return {
+            "role": "assistant",
+            "content": summary["message"],
+            "topic_id": topic_id,
+            "current_question": -1,
+            "follow_up_count": 0,
+            "total_questions": len(questions),
+            "is_completed": True,
+            "responses": responses,
+            "summary": summary,
+            "user_message": body.content,
+            "grammar_correction": grammar["corrected"] if grammar["has_errors"] else None,
+            "grammar_changes": grammar["changes"],
+            "has_grammar_errors": grammar["has_errors"],
+            "is_follow_up": False,
+        }
+
+    next_q = questions[next_q_idx]
+    feedback = _generate_response_feedback(score, grammar, body.content, relevance)
 
     return {
         "role": "assistant",
-        "content": f"{feedback}\n\n{next_q}",
+        "content": f"{feedback}\n\nNow, let's move to the next question.\n\n{next_q}",
         "topic_id": topic_id,
-        "current_question": q_idx,
+        "current_question": next_q_idx,
+        "follow_up_count": 0,
         "total_questions": len(questions),
         "is_completed": False,
         "responses": responses,
@@ -218,6 +340,8 @@ async def structured_chat(topic_id: str, body: StructuredChatRequest):
         "grammar_changes": grammar["changes"],
         "has_grammar_errors": grammar["has_errors"],
         "evaluation_score": score,
+        "is_follow_up": False,
+        "relevance": relevance,
     }
 
 @router.post("/evaluate")
@@ -311,6 +435,52 @@ async def chat(topic_id: str, message: ConversationMessage):
         has_grammar_errors=grammar["has_errors"],
     )
 
+def _maybe_fix_last_response(responses: list):
+    if responses and responses[-1].get("is_follow_up"):
+        responses[-1]["is_follow_up"] = False
+
+def _evaluate_topic_relevance(text: str, topic_id: str) -> dict:
+    words = text.lower().split()
+    keywords = TOPIC_KEYWORDS.get(topic_id, [])
+    matched = [kw for kw in keywords if kw in text.lower()]
+    score = min(1.0, len(matched) / max(len(keywords) * 0.15, 1))
+    if len(text.split()) < 3:
+        score *= 0.5
+        message = "Try to give a more complete answer related to the topic."
+    elif score >= 0.4:
+        message = "Your answer is very relevant to the topic. Great!"
+    elif score >= 0.2:
+        message = "Your answer is somewhat related. Try to use more topic vocabulary."
+    else:
+        message = "Your answer seems off-topic. Try to focus on the question about the current topic."
+    return {"score": round(score, 2), "message": message, "matched_keywords": matched}
+
+def _generate_follow_up(text: str, topic_id: str, follow_up_count: int) -> str:
+    text_lower = text.lower()
+    word_count = len(text.split())
+
+    if word_count < 3:
+        templates = [
+            "Can you tell me a little more about that?",
+            "Please expand your answer with more details.",
+            "Try to use a complete sentence to tell me more.",
+            "I would love to hear more. Could you elaborate?",
+        ]
+        return random.choice(templates)
+
+    for keywords, question in FOLLOW_UP_PATTERNS:
+        if any(kw in text_lower for kw in keywords):
+            return question
+
+    topic_follow_ups = TOPIC_FOLLOW_UPS.get(topic_id, [
+        "Tell me more about that.",
+        "That is interesting! Can you elaborate?",
+        "Why do you feel that way?",
+    ])
+    if follow_up_count < len(topic_follow_ups):
+        return topic_follow_ups[follow_up_count]
+    return random.choice(topic_follow_ups)
+
 def _evaluate_response(text: str, q_idx: int, topic_id: str) -> float:
     score = 0.5
     words = text.lower().split()
@@ -334,13 +504,18 @@ def _evaluate_response(text: str, q_idx: int, topic_id: str) -> float:
 
     return min(1.0, max(0.0, score))
 
-def _generate_response_feedback(score: float, grammar: dict, text: str) -> str:
+def _generate_response_feedback(score: float, grammar: dict, text: str, relevance: dict = None) -> str:
     parts = []
 
     if grammar["has_errors"]:
         parts.append(f"Grammar: {grammar['corrected']}")
     else:
         parts.append(random.choice(["Good grammar!", "Your sentence structure is correct.", "Well constructed!"]))
+
+    if relevance and relevance["score"] < 0.2:
+        parts.append(relevance["message"])
+    elif relevance and relevance["score"] >= 0.4:
+        parts.append(relevance["message"])
 
     if len(text.split()) < 4:
         parts.append("Try to give longer answers with more details.")

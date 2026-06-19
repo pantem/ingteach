@@ -72,6 +72,6 @@ const api = {
     getMyRecommendations: () => apiGet('/progress/me/recommendations'),
 
     startConversation: (topicId) => apiPost(`/conversation/start/${topicId}`),
-    structuredChat: (topicId, content, currentQuestion, responses) =>
-        apiPost(`/conversation/structured/${topicId}`, { role: 'user', content, current_question: currentQuestion, responses }),
+    structuredChat: (topicId, content, currentQuestion, followUpCount, responses) =>
+        apiPost(`/conversation/structured/${topicId}`, { role: 'user', content, current_question: currentQuestion, follow_up_count: followUpCount, responses }),
 };
