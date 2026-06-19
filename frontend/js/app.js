@@ -113,7 +113,9 @@ function initAuthForms() {
         const password = document.getElementById('login-password').value;
         const errorEl = document.getElementById('login-error');
         errorEl.classList.add('hidden');
-        document.getElementById('btn-entrar').disabled = true;
+        const btn = document.getElementById('btn-entrar');
+        btn.disabled = true;
+        btn.classList.add('btn-loading');
         try {
             const result = await api.login(email, password);
             setToken(result.access_token);
@@ -123,6 +125,9 @@ function initAuthForms() {
         } catch (err) {
             errorEl.textContent = err.message;
             errorEl.classList.remove('hidden');
+        } finally {
+            btn.disabled = false;
+            btn.classList.remove('btn-loading');
         }
     });
 
