@@ -236,6 +236,7 @@ function navigateTo(view) {
 function initNavigation() {
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', (e) => {
+            if (!link.dataset.view) return;
             e.preventDefault();
             navigateTo(link.dataset.view);
         });
