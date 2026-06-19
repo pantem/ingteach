@@ -1,6 +1,4 @@
-const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:8000/api'
-    : 'https://ingteach.onrender.com/api';
+const API_BASE = 'http://localhost:8000/api';
 
 function setToken(token) {
     localStorage.setItem('token', token);

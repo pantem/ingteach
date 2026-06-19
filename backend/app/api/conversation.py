@@ -180,10 +180,16 @@ async def chat(topic_id: str, message: ConversationMessage):
         if random.random() > 0.5:
             response += f" Try incorporating: {random.choice(topic.key_phrases)}"
 
+    grammar = correct_sentence(message.content)
+
     return {
         "role": "assistant",
         "content": response,
-        "topic_id": topic_id
+        "topic_id": topic_id,
+        "user_message": message.content,
+        "grammar_correction": grammar["corrected"],
+        "grammar_changes": grammar["changes"],
+        "has_grammar_errors": grammar["has_errors"]
     }
 
 def _calculate_similarity(s1: str, s2: str) -> float:

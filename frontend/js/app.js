@@ -114,13 +114,7 @@ function initAuthForms() {
         const errorEl = document.getElementById('login-error');
         errorEl.classList.add('hidden');
         try {
-            const res = await fetch('http://localhost:8000/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-            const result = await res.json();
-            if (!res.ok) throw new Error(result.detail || 'Error al iniciar sesi\u00f3n');
+            const result = await api.login(email, password);
             setToken(result.access_token);
             localStorage.setItem('user', JSON.stringify(result.user));
             state.user = result.user;
@@ -134,18 +128,12 @@ function initAuthForms() {
     document.getElementById('form-register').addEventListener('submit', async (e) => {
         e.preventDefault();
         const username = document.getElementById('reg-username').value;
-        const email = document.getElementById('reg-email').value;
         const password = document.getElementById('reg-password').value;
+        const email = document.getElementById('reg-email').value;
         const errorEl = document.getElementById('register-error');
         errorEl.classList.add('hidden');
         try {
-            const res = await fetch('http://localhost:8000/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, email, password })
-            });
-            const result = await res.json();
-            if (!res.ok) throw new Error(result.detail || 'Error al registrarse');
+            const result = await api.register(username, email, password);
             setToken(result.access_token);
             localStorage.setItem('user', JSON.stringify(result.user));
             state.user = result.user;
@@ -355,20 +343,10 @@ function displaySpeechEvaluation(eval) {
         ul.appendChild(li);
     });
 
-    const grammarBox = document.getElementById('grammar-correction-box');
+    showGrammarCorrection(eval.grammar_correction, eval.grammar_changes, eval.has_grammar_errors);
     if (eval.has_grammar_errors && eval.grammar_correction) {
-        grammarBox.classList.remove('hidden');
-        document.getElementById('corrected-text').textContent = eval.grammar_correction;
-        const cl = document.getElementById('grammar-changes-list');
-        cl.innerHTML = '';
-        (eval.grammar_changes || []).forEach(c => {
-            const li = document.createElement('li');
-            li.textContent = c;
-            cl.appendChild(li);
-        });
         setTimeout(() => speak(eval.grammar_correction, 0.7), 500);
     } else {
-        grammarBox.classList.add('hidden');
         setTimeout(() => speak(eval.transcript, 0.7), 500);
     }
 }
@@ -566,8 +544,27 @@ async function sendChatMessage() {
     try {
         const response = await api.chat(state.currentTopic.id, text);
         addChatMessage('assistant', response.content);
+        showGrammarCorrection(response.grammar_correction, response.grammar_changes, response.has_grammar_errors);
         speak(response.content);
     } catch { addChatMessage('assistant', 'Lo siento, hubo un error de conexi\u00f3n.'); }
+}
+
+function showGrammarCorrection(corrected, changes, hasErrors) {
+    const box = document.getElementById('grammar-correction-box');
+    if (hasErrors && corrected) {
+        const correctedText = document.getElementById('corrected-text');
+        const changesList = document.getElementById('grammar-changes-list');
+        correctedText.textContent = corrected;
+        changesList.innerHTML = '';
+        (changes || []).forEach(c => {
+            const li = document.createElement('li');
+            li.textContent = c;
+            changesList.appendChild(li);
+        });
+        box.classList.remove('hidden');
+    } else {
+        box.classList.add('hidden');
+    }
 }
 
 function addChatMessage(role, content) {

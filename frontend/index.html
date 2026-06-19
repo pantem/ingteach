@@ -164,12 +164,6 @@
                             <p><strong>Transcripci&oacute;n:</strong> <span id="transcript-text"></span>
                                 <button onclick="playTranscript()" class="btn-play" title="Escuchar">&#x1F50A;</button>
                             </p>
-                            <div id="grammar-correction-box" class="grammar-box hidden">
-                                <p><strong>Correcci&oacute;n:</strong> <span id="corrected-text"></span>
-                                    <button onclick="playCorrected()" class="btn-play" title="Escuchar correcci&oacute;n">&#x1F50A;</button>
-                                </p>
-                                <ul id="grammar-changes-list" class="grammar-changes"></ul>
-                            </div>
                             <div class="scores">
                                 <div class="score-item"><span class="score-label">Precisi&oacute;n:</span> <span id="score-accuracy" class="score-value">0%</span></div>
                                 <div class="score-item"><span class="score-label">Pronunciaci&oacute;n:</span> <span id="score-pronunciation" class="score-value">0%</span></div>
@@ -177,6 +171,12 @@
                             </div>
                             <p class="feedback" id="speech-feedback"></p>
                             <ul id="speech-improvements" class="improvements"></ul>
+                        </div>
+                        <div id="grammar-correction-box" class="grammar-box hidden">
+                            <p><strong>Correcci&oacute;n:</strong> <span id="corrected-text"></span>
+                                <button onclick="playCorrected()" class="btn-play" title="Escuchar correcci&oacute;n">&#x1F50A;</button>
+                            </p>
+                            <ul id="grammar-changes-list" class="grammar-changes"></ul>
                         </div>
                     </div>
                 </div>
