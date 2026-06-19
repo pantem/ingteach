@@ -169,6 +169,7 @@ const DICT = [
 ];
 
 const DICT_API_CACHE = new Map();
+let dictDirection = 'en-es';
 
 function initDictionary() {
     const toggle = document.getElementById('btn-dict-toggle');
@@ -176,6 +177,18 @@ function initDictionary() {
     const panel = document.getElementById('dict-panel');
     const search = document.getElementById('dict-search');
     const results = document.getElementById('dict-results');
+    const btnEn = document.getElementById('dict-lang-en');
+    const btnEs = document.getElementById('dict-lang-es');
+
+    function setDir(dir) {
+        dictDirection = dir;
+        btnEn.classList.toggle('active', dir === 'en-es');
+        btnEs.classList.toggle('active', dir === 'es-en');
+        search.placeholder = dir === 'en-es' ? 'Buscar palabra en ingl\u00e9s...' : 'Buscar palabra en espa\u00f1ol...';
+        search.value = '';
+        renderDictResults('');
+        search.focus();
+    }
 
     function show() {
         panel.classList.remove('hidden');
@@ -194,6 +207,8 @@ function initDictionary() {
         state.dictOpen ? hide() : show();
     });
     close.addEventListener('click', hide);
+    btnEn.addEventListener('click', () => setDir('en-es'));
+    btnEs.addEventListener('click', () => setDir('es-en'));
 
     let debounceTimer;
     search.addEventListener('input', () => {
@@ -213,7 +228,11 @@ async function renderDictResults(query) {
         return;
     }
     const q = query.toLowerCase();
-    const local = DICT.filter(e => e.en.includes(q) || e.es.includes(q)).slice(0, 50);
+    const isEnEs = dictDirection === 'en-es';
+
+    const local = DICT.filter(e =>
+        isEnEs ? e.en.includes(q) : e.es.includes(q)
+    ).slice(0, 50);
 
     if (local.length) {
         results.innerHTML = local.map(e =>
@@ -224,26 +243,29 @@ async function renderDictResults(query) {
 
     results.innerHTML = '<div class="dict-empty">Buscando en l&iacute;nea...</div>';
 
-    const cacheKey = q;
+    const cacheKey = dictDirection + '|' + q;
     if (DICT_API_CACHE.has(cacheKey)) {
         const entry = DICT_API_CACHE.get(cacheKey);
         results.innerHTML = entry.map(e =>
-            `<div class="dict-entry"><span class="dict-en">${escapeHtml(e.en)}</span><span class="dict-es">${escapeHtml(e.es)}</span></div>`
+            `<div class="dict-entry${e.source === 'api' ? ' dict-api' : ''}"><span class="dict-en">${escapeHtml(e.en)}</span><span class="dict-es">${escapeHtml(e.es)}</span></div>`
         ).join('');
         return;
     }
 
     try {
+        const langpair = isEnEs ? 'en|es' : 'es|en';
         const [transRes, dictRes] = await Promise.all([
-            fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(q)}&langpair=en|es`).then(r => r.json()).catch(() => null),
-            fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(q)}`).then(r => r.json()).catch(() => null)
+            fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(q)}&langpair=${langpair}`).then(r => r.json()).catch(() => null),
+            isEnEs
+                ? fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(q)}`).then(r => r.json()).catch(() => null)
+                : Promise.resolve(null)
         ]);
 
         const entries = [];
 
         if (transRes && transRes.responseData && transRes.responseData.translatedText) {
-            const spanish = transRes.responseData.translatedText;
-            entries.push({ en: q, es: spanish, source: 'api' });
+            const t = transRes.responseData.translatedText;
+            entries.push(isEnEs ? { en: q, es: t, source: 'api' } : { en: t, es: q, source: 'api' });
         }
 
         if (dictRes && Array.isArray(dictRes)) {

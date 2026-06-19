@@ -90,7 +90,11 @@
                 <h3>&#x1F4D6; Diccionario</h3>
                 <button id="btn-dict-close" class="btn-dict-close">&times;</button>
             </div>
-            <input type="text" id="dict-search" class="dict-search" placeholder="Buscar palabra en ingl&eacute;s o espa&ntilde;ol..." autocomplete="off">
+            <div class="dict-lang-row">
+                <button id="dict-lang-en" class="dict-lang-btn active">EN &#x2192; ES</button>
+                <button id="dict-lang-es" class="dict-lang-btn">ES &#x2192; EN</button>
+            </div>
+            <input type="text" id="dict-search" class="dict-search" placeholder="Buscar palabra..." autocomplete="off">
             <div id="dict-results" class="dict-results"></div>
         </div>
 
