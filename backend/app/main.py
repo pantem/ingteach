@@ -26,7 +26,6 @@ app.include_router(conjugations.router, prefix="/api/conjugations", tags=["conju
 app.include_router(tests.router, prefix="/api/tests", tags=["tests"])
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(progress.router, prefix="/api/progress", tags=["progress"])
-app.include_router(progress.auth_router, prefix="/api/progress", tags=["progress-auth"])
 
 @app.get("/")
 async def root():
