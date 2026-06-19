@@ -725,12 +725,14 @@ async function selectTest(moduleId) {
             <div class="question-card" data-qid="${q.id}">
                 <div><span class="q-number">${i + 1}</span><span class="q-text">${escapeHtml(q.question)}</span></div>
                 <div class="options">
-                    ${(q.options || []).map(opt => `
-                        <label class="option">
+                    ${(q.options || []).map(opt => {
+                        const val = escapeHtml(opt).replace(/'/g, "\\'");
+                        return `<label class="option">
                             <input type="radio" name="q-${q.id}" value="${escapeHtml(opt)}"
-                                onchange="recordAnswer('${q.id}', '${escapeHtml(opt)}')">
+                                onchange="recordAnswer('${q.id}', '${val}')">
                             <span>${escapeHtml(opt)}</span>
-                        </label>`).join('')}
+                        </label>`;
+                    }).join('')}
                 </div>
             </div>`).join('');
         document.getElementById('btn-submit-test').disabled = false;
