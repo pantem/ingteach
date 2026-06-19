@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 </head>
+
 <body>
     <div id="auth-overlay" class="auth-overlay">
         <div class="auth-card">
@@ -25,7 +27,7 @@
                     <input type="password" id="login-password" placeholder="••••••••" required>
                 </div>
                 <p id="login-error" class="auth-error hidden"></p>
-                <button type="submit" class="btn btn-primary btn-full">Entrar</button>
+                <button id="btn-entrar" type="submit" class="btn btn-primary btn-full">Entrar</button>
             </form>
             <form id="form-register" class="auth-form">
                 <h2>Crea tu cuenta</h2>
@@ -61,12 +63,17 @@
                 </div>
             </div>
             <ul class="nav-list">
-                <li><a href="#" data-view="dashboard" class="nav-link active"><span class="nav-icon">&#x1F3E0;</span> Dashboard</a></li>
-                <li><a href="#" data-view="modules" class="nav-link"><span class="nav-icon">&#x1F4DA;</span> M&oacute;dulos</a></li>
-                <li><a href="#" data-view="conversation" class="nav-link"><span class="nav-icon">&#x1F5E8;</span> Conversaci&oacute;n</a></li>
-                <li><a href="#" data-view="conjugations" class="nav-link"><span class="nav-icon">&#x1F3B5;</span> Verbos</a></li>
+                <li><a href="#" data-view="dashboard" class="nav-link active"><span class="nav-icon">&#x1F3E0;</span>
+                        Dashboard</a></li>
+                <li><a href="#" data-view="modules" class="nav-link"><span class="nav-icon">&#x1F4DA;</span>
+                        M&oacute;dulos</a></li>
+                <li><a href="#" data-view="conversation" class="nav-link"><span class="nav-icon">&#x1F5E8;</span>
+                        Conversaci&oacute;n</a></li>
+                <li><a href="#" data-view="conjugations" class="nav-link"><span class="nav-icon">&#x1F3B5;</span>
+                        Verbos</a></li>
                 <li><a href="#" data-view="tests" class="nav-link"><span class="nav-icon">&#x2705;</span> Tests</a></li>
-                <li><a href="#" data-view="progress" class="nav-link"><span class="nav-icon">&#x1F4C8;</span> Progreso</a></li>
+                <li><a href="#" data-view="progress" class="nav-link"><span class="nav-icon">&#x1F4C8;</span>
+                        Progreso</a></li>
             </ul>
             <div class="sidebar-footer">
                 <select id="voice-select" class="voice-select">
@@ -103,7 +110,8 @@
                 <div class="card quick-actions">
                     <h3>Acci&oacute;n R&aacute;pida</h3>
                     <div class="quick-buttons">
-                        <button onclick="navigateTo('conversation')" class="btn btn-primary">Practicar conversaci&oacute;n</button>
+                        <button onclick="navigateTo('conversation')" class="btn btn-primary">Practicar
+                            conversaci&oacute;n</button>
                         <button onclick="navigateTo('modules')" class="btn btn-secondary">Ver m&oacute;dulos</button>
                         <button onclick="navigateTo('tests')" class="btn btn-accent">Tomar un test</button>
                     </div>
@@ -138,9 +146,12 @@
                         </div>
                         <div class="phrase-hint-box">
                             <h4>Vocabulario usado</h4>
-                            <div id="vocab-tracker"><p class="text-muted" style="font-size:0.8rem">Ninguna palabra a&uacute;n</p></div>
+                            <div id="vocab-tracker">
+                                <p class="text-muted" style="font-size:0.8rem">Ninguna palabra a&uacute;n</p>
+                            </div>
                         </div>
-                        <button id="btn-suggest-phrase" class="btn btn-secondary" style="font-size:0.85rem;padding:8px 12px;" disabled>
+                        <button id="btn-suggest-phrase" class="btn btn-secondary"
+                            style="font-size:0.85rem;padding:8px 12px;" disabled>
                             &#x1F4A1; Sugerir frase
                         </button>
                     </div>
@@ -165,16 +176,20 @@
                                 <button onclick="playTranscript()" class="btn-play" title="Escuchar">&#x1F50A;</button>
                             </p>
                             <div class="scores">
-                                <div class="score-item"><span class="score-label">Precisi&oacute;n:</span> <span id="score-accuracy" class="score-value">0%</span></div>
-                                <div class="score-item"><span class="score-label">Pronunciaci&oacute;n:</span> <span id="score-pronunciation" class="score-value">0%</span></div>
-                                <div class="score-item"><span class="score-label">Fluidez:</span> <span id="score-fluency" class="score-value">0%</span></div>
+                                <div class="score-item"><span class="score-label">Precisi&oacute;n:</span> <span
+                                        id="score-accuracy" class="score-value">0%</span></div>
+                                <div class="score-item"><span class="score-label">Pronunciaci&oacute;n:</span> <span
+                                        id="score-pronunciation" class="score-value">0%</span></div>
+                                <div class="score-item"><span class="score-label">Fluidez:</span> <span
+                                        id="score-fluency" class="score-value">0%</span></div>
                             </div>
                             <p class="feedback" id="speech-feedback"></p>
                             <ul id="speech-improvements" class="improvements"></ul>
                         </div>
                         <div id="grammar-correction-box" class="grammar-box hidden">
                             <p><strong>Correcci&oacute;n:</strong> <span id="corrected-text"></span>
-                                <button onclick="playCorrected()" class="btn-play" title="Escuchar correcci&oacute;n">&#x1F50A;</button>
+                                <button onclick="playCorrected()" class="btn-play"
+                                    title="Escuchar correcci&oacute;n">&#x1F50A;</button>
                             </p>
                             <ul id="grammar-changes-list" class="grammar-changes"></ul>
                         </div>
@@ -238,7 +253,9 @@
                     </div>
                     <div class="card progress-card">
                         <h3>M&oacute;dulos Completados</h3>
-                        <div id="completed-list"><p class="text-muted">Ninguno a&uacute;n</p></div>
+                        <div id="completed-list">
+                            <p class="text-muted">Ninguno a&uacute;n</p>
+                        </div>
                     </div>
                 </div>
                 <div class="card chart-card">
@@ -251,7 +268,9 @@
                 </div>
                 <div class="card">
                     <h3>Recomendaciones</h3>
-                    <div id="recommendations"><p class="loading">Cargando...</p></div>
+                    <div id="recommendations">
+                        <p class="loading">Cargando...</p>
+                    </div>
                 </div>
             </div>
         </main>
@@ -260,4 +279,5 @@
     <script src="js/api.js"></script>
     <script src="js/app.js"></script>
 </body>
+
 </html>

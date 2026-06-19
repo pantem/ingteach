@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedUser = localStorage.getItem('user');
     const token = getToken();
     if (savedUser && token) {
-        try { state.user = JSON.parse(savedUser); showApp(); } catch {}
+        try { state.user = JSON.parse(savedUser); showApp(); } catch { }
         tryLoginWithToken();
     } else if (token) {
         tryLoginWithToken();
@@ -79,7 +79,7 @@ function showAuth() {
 function showApp() {
     if (!state.user) {
         const saved = localStorage.getItem('user');
-        if (saved) { try { state.user = JSON.parse(saved); } catch {} }
+        if (saved) { try { state.user = JSON.parse(saved); } catch { } }
     }
     document.getElementById('auth-overlay').classList.add('hidden');
     document.getElementById('app').classList.remove('hidden');
@@ -113,6 +113,7 @@ function initAuthForms() {
         const password = document.getElementById('login-password').value;
         const errorEl = document.getElementById('login-error');
         errorEl.classList.add('hidden');
+        document.getElementById('btn-entrar').disabled = true;
         try {
             const result = await api.login(email, password);
             setToken(result.access_token);
@@ -150,7 +151,7 @@ function initLogout() {
         delToken();
         localStorage.removeItem('user');
         state.user = null;
-        Object.values(state.charts).forEach(c => { try { c.destroy(); } catch {} });
+        Object.values(state.charts).forEach(c => { try { c.destroy(); } catch { } });
         state.charts = {};
         showAuth();
     });
@@ -256,7 +257,7 @@ function initSpeechRecognition() {
             state.isRecording = false;
             updateMicButton();
             if (state.recognition) {
-                try { state.recognition.stop(); } catch {}
+                try { state.recognition.stop(); } catch { }
             }
 
             document.getElementById('speech-result').classList.remove('hidden');
