@@ -1,6 +1,9 @@
+import logging
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic_settings import BaseSettings
 from typing import Optional
+
+logger = logging.getLogger(__name__)
 
 DEFAULT_MONGO_URI = "mongodb+srv://seshomaru:P4nqu3s1t0@logis.2m8j0.mongodb.net/teachlang"
 
@@ -13,7 +16,13 @@ class Settings(BaseSettings):
 
     @property
     def mongo_uri(self) -> str:
-        return self.MONGO_URI or DEFAULT_MONGO_URI
+        raw = (self.MONGO_URI or "").strip()
+        if raw and (raw.startswith("mongodb://") or raw.startswith("mongodb+srv://")):
+            return raw
+        if raw:
+            safe = raw[:30] + ("..." if len(raw) > 30 else "")
+            logger.warning("MONGO_URI env var has invalid scheme, using default. Got: %s", safe)
+        return DEFAULT_MONGO_URI
 
 settings = Settings()
 _client: AsyncIOMotorClient = None
