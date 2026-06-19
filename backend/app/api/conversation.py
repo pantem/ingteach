@@ -136,7 +136,7 @@ async def evaluate_speech(body: EvaluateRequest):
     feedback = _generate_feedback(accuracy_score, fluency_score, word_count, transcript)
     improvements = _generate_improvements(accuracy_score, transcript_lower, best_match)
 
-    grammar = correct_sentence(transcript)
+    grammar = await correct_sentence(transcript)
 
     return SpeechEvaluation(
         transcript=transcript,
@@ -152,7 +152,7 @@ async def evaluate_speech(body: EvaluateRequest):
 
 @router.post("/correct")
 async def correct_grammar(body: CorrectRequest):
-    return correct_sentence(body.text)
+    return await correct_sentence(body.text)
 
 @router.post("/chat/{topic_id}")
 async def chat(topic_id: str, message: ConversationMessage):
@@ -180,7 +180,7 @@ async def chat(topic_id: str, message: ConversationMessage):
         if random.random() > 0.5:
             response += f" Try incorporating: {random.choice(topic.key_phrases)}"
 
-    grammar = correct_sentence(message.content)
+    grammar = await correct_sentence(message.content)
 
     return {
         "role": "assistant",
