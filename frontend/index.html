@@ -74,6 +74,8 @@
                 <li><a href="#" data-view="tests" class="nav-link"><span class="nav-icon">&#x2705;</span> Tests</a></li>
                 <li><a href="#" data-view="progress" class="nav-link"><span class="nav-icon">&#x1F4C8;</span>
                         Progreso</a></li>
+                <li><a href="#" id="btn-dict-toggle" class="nav-link"><span class="nav-icon">&#x1F4D6;</span>
+                        Diccionario</a></li>
             </ul>
             <div class="sidebar-footer">
                 <select id="voice-select" class="voice-select">
@@ -82,6 +84,15 @@
                 <button id="btn-logout" class="btn btn-logout">Cerrar sesi&oacute;n</button>
             </div>
         </nav>
+
+        <div id="dict-panel" class="dict-panel hidden">
+            <div class="dict-header">
+                <h3>&#x1F4D6; Diccionario</h3>
+                <button id="btn-dict-close" class="btn-dict-close">&times;</button>
+            </div>
+            <input type="text" id="dict-search" class="dict-search" placeholder="Buscar palabra en ingl&eacute;s o espa&ntilde;ol..." autocomplete="off">
+            <div id="dict-results" class="dict-results"></div>
+        </div>
 
         <main id="main-content">
             <div id="view-dashboard" class="view active">
