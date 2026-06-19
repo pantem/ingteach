@@ -1197,19 +1197,19 @@ h4 {
 .dict-panel {
     position: fixed;
     top: 0;
-    right: 0;
+    left: 0;
     width: 320px;
     height: 100%;
     background: var(--bg-card);
-    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+    z-index: 1001;
     display: flex;
     flex-direction: column;
     transition: transform 0.25s ease;
-    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
 }
 .dict-panel.hidden {
-    transform: translateX(100%);
+    transform: translateX(-100%);
 }
 .dict-header {
     display: flex;
@@ -1275,4 +1275,11 @@ h4 {
     color: var(--text-light);
     padding: 40px 16px;
     font-size: 0.85rem;
+}
+.dict-api .dict-es {
+    font-style: italic;
+}
+.dict-api .dict-es::before {
+    content: "🌐 ";
+    font-size: 0.75rem;
 }

@@ -168,6 +168,8 @@ const DICT = [
     {en:"hello",es:"hola"},{en:"goodbye",es:"adiós"},{en:"good morning",es:"buenos días"},{en:"good night",es:"buenas noches"},{en:"please",es:"por favor"},{en:"thank you",es:"gracias"},{en:"sorry",es:"lo siento"},{en:"yes",es:"sí"},{en:"no",es:"no"},{en:"maybe",es:"tal vez"},{en:"okay",es:"está bien"},{en:"help",es:"ayuda"},{en:"name",es:"nombre"},{en:"friend",es:"amigo"},{en:"family",es:"familia"},{en:"mother",es:"madre"},{en:"father",es:"padre"},{en:"brother",es:"hermano"},{en:"sister",es:"hermana"},{en:"child",es:"niño"},{en:"teacher",es:"maestro"},{en:"student",es:"estudiante"},{en:"doctor",es:"médico"},{en:"person",es:"persona"},{en:"people",es:"personas"},{en:"man",es:"hombre"},{en:"woman",es:"mujer"},{en:"boy",es:"niño"},{en:"girl",es:"niña"},{en:"day",es:"día"},{en:"night",es:"noche"},{en:"morning",es:"mañana"},{en:"afternoon",es:"tarde"},{en:"evening",es:"noche"},{en:"today",es:"hoy"},{en:"tomorrow",es:"mañana"},{en:"yesterday",es:"ayer"},{en:"week",es:"semana"},{en:"month",es:"mes"},{en:"year",es:"año"},{en:"time",es:"tiempo"},{en:"hour",es:"hora"},{en:"minute",es:"minuto"},{en:"now",es:"ahora"},{en:"later",es:"después"},{en:"always",es:"siempre"},{en:"never",es:"nunca"},{en:"sometimes",es:"a veces"},{en:"usually",es:"usualmente"},{en:"often",es:"a menudo"},{en:"here",es:"aquí"},{en:"there",es:"allí"},{en:"where",es:"dónde"},{en:"when",es:"cuándo"},{en:"why",es:"por qué"},{en:"what",es:"qué"},{en:"how",es:"cómo"},{en:"who",es:"quién"},{en:"which",es:"cuál"},{en:"big",es:"grande"},{en:"small",es:"pequeño"},{en:"hot",es:"caliente"},{en:"cold",es:"frío"},{en:"good",es:"bueno"},{en:"bad",es:"malo"},{en:"new",es:"nuevo"},{en:"old",es:"viejo"},{en:"young",es:"joven"},{en:"tall",es:"alto"},{en:"short",es:"bajo"},{en:"long",es:"largo"},{en:"fast",es:"rápido"},{en:"slow",es:"lento"},{en:"easy",es:"fácil"},{en:"difficult",es:"difícil"},{en:"cheap",es:"barato"},{en:"expensive",es:"caro"},{en:"beautiful",es:"hermoso"},{en:"ugly",es:"feo"},{en:"happy",es:"feliz"},{en:"sad",es:"triste"},{en:"angry",es:"enojado"},{en:"tired",es:"cansado"},{en:"hungry",es:"hambriento"},{en:"thirsty",es:"sediento"},{en:"sick",es:"enfermo"},{en:"healthy",es:"saludable"},{en:"rich",es:"rico"},{en:"poor",es:"pobre"},{en:"important",es:"importante"},{en:"different",es:"diferente"},{en:"same",es:"mismo"},{en:"first",es:"primero"},{en:"last",es:"último"},{en:"next",es:"siguiente"},{en:"go",es:"ir"},{en:"come",es:"venir"},{en:"arrive",es:"llegar"},{en:"leave",es:"salir"},{en:"stay",es:"quedarse"},{en:"travel",es:"viajar"},{en:"walk",es:"caminar"},{en:"run",es:"correr"},{en:"eat",es:"comer"},{en:"drink",es:"beber"},{en:"cook",es:"cocinar"},{en:"breakfast",es:"desayuno"},{en:"lunch",es:"almuerzo"},{en:"dinner",es:"cena"},{en:"food",es:"comida"},{en:"water",es:"agua"},{en:"milk",es:"leche"},{en:"bread",es:"pan"},{en:"meat",es:"carne"},{en:"rice",es:"arroz"},{en:"fruit",es:"fruta"},{en:"vegetable",es:"verdura"},{en:"coffee",es:"café"},{en:"tea",es:"té"},{en:"beer",es:"cerveza"},{en:"wine",es:"vino"},{en:"do",es:"hacer"},{en:"make",es:"hacer/fabricar"},{en:"have",es:"tener"},{en:"get",es:"obtener"},{en:"give",es:"dar"},{en:"take",es:"tomar"},{en:"buy",es:"comprar"},{en:"sell",es:"vender"},{en:"pay",es:"pagar"},{en:"find",es:"encontrar"},{en:"lose",es:"perder"},{en:"keep",es:"guardar"},{en:"need",es:"necesitar"},{en:"want",es:"querer"},{en:"like",es:"gustar"},{en:"love",es:"amar"},{en:"hate",es:"odiar"},{en:"know",es:"saber/conocer"},{en:"think",es:"pensar"},{en:"believe",es:"creer"},{en:"understand",es:"entender"},{en:"learn",es:"aprender"},{en:"teach",es:"enseñar"},{en:"read",es:"leer"},{en:"write",es:"escribir"},{en:"speak",es:"hablar"},{en:"say",es:"decir"},{en:"tell",es:"contar"},{en:"ask",es:"preguntar"},{en:"answer",es:"responder"},{en:"show",es:"mostrar"},{en:"work",es:"trabajar"},{en:"study",es:"estudiar"},{en:"play",es:"jugar"},{en:"sing",es:"cantar"},{en:"dance",es:"bailar"},{en:"swim",es:"nadar"},{en:"sleep",es:"dormir"},{en:"wake up",es:"despertarse"},{en:"wash",es:"lavar"},{en:"clean",es:"limpiar"},{en:"open",es:"abrir"},{en:"close",es:"cerrar"},{en:"start",es:"empezar"},{en:"finish",es:"terminar"},{en:"try",es:"intentar"},{en:"change",es:"cambiar"},{en:"use",es:"usar"},{en:"can",es:"poder"},{en:"must",es:"deber"},{en:"should",es:"debería"},{en:"may",es:"puede que"},{en:"will",es:"va a"},{en:"would",es:"quisiera"},{en:"house",es:"casa"},{en:"apartment",es:"departamento"},{en:"room",es:"habitación"},{en:"door",es:"puerta"},{en:"window",es:"ventana"},{en:"table",es:"mesa"},{en:"chair",es:"silla"},{en:"bed",es:"cama"},{en:"bathroom",es:"baño"},{en:"kitchen",es:"cocina"},{en:"car",es:"coche"},{en:"bus",es:"autobús"},{en:"train",es:"tren"},{en:"airplane",es:"avión"},{en:"bicycle",es:"bicicleta"},{en:"street",es:"calle"},{en:"city",es:"ciudad"},{en:"country",es:"país"},{en:"store",es:"tienda"},{en:"restaurant",es:"restaurante"},{en:"hospital",es:"hospital"},{en:"school",es:"escuela"},{en:"office",es:"oficina"},{en:"park",es:"parque"},{en:"beach",es:"playa"},{en:"mountain",es:"montaña"},{en:"river",es:"río"},{en:"sea",es:"mar"},{en:"sky",es:"cielo"},{en:"sun",es:"sol"},{en:"moon",es:"luna"},{en:"star",es:"estrella"},{en:"rain",es:"lluvia"},{en:"snow",es:"nieve"},{en:"wind",es:"viento"},{en:"weather",es:"clima"},{en:"color",es:"color"},{en:"red",es:"rojo"},{en:"blue",es:"azul"},{en:"green",es:"verde"},{en:"yellow",es:"amarillo"},{en:"white",es:"blanco"},{en:"black",es:"negro"},{en:"one",es:"uno"},{en:"two",es:"dos"},{en:"three",es:"tres"},{en:"four",es:"cuatro"},{en:"five",es:"cinco"},{en:"six",es:"seis"},{en:"seven",es:"siete"},{en:"eight",es:"ocho"},{en:"nine",es:"nueve"},{en:"ten",es:"diez"},{en:"hundred",es:"cien"},{en:"thousand",es:"mil"},{en:"monday",es:"lunes"},{en:"tuesday",es:"martes"},{en:"wednesday",es:"miércoles"},{en:"thursday",es:"jueves"},{en:"friday",es:"viernes"},{en:"saturday",es:"sábado"},{en:"sunday",es:"domingo"},{en:"january",es:"enero"},{en:"february",es:"febrero"},{en:"march",es:"marzo"},{en:"april",es:"abril"},{en:"may",es:"mayo"},{en:"june",es:"junio"},{en:"july",es:"julio"},{en:"august",es:"agosto"},{en:"september",es:"septiembre"},{en:"october",es:"octubre"},{en:"november",es:"noviembre"},{en:"december",es:"diciembre"},{en:"spring",es:"primavera"},{en:"summer",es:"verano"},{en:"autumn",es:"otoño"},{en:"winter",es:"invierno"},{en:"dog",es:"perro"},{en:"cat",es:"gato"},{en:"bird",es:"pájaro"},{en:"fish",es:"pez"},{en:"horse",es:"caballo"},{en:"cow",es:"vaca"},{en:"pig",es:"cerdo"},{en:"chicken",es:"pollo"},{en:"animal",es:"animal"},{en:"tree",es:"árbol"},{en:"flower",es:"flor"},{en:"plant",es:"planta"},{en:"book",es:"libro"},{en:"pen",es:"bolígrafo"},{en:"paper",es:"papel"},{en:"phone",es:"teléfono"},{en:"computer",es:"computadora"},{en:"internet",es:"internet"},{en:"email",es:"correo electrónico"},{en:"money",es:"dinero"},{en:"price",es:"precio"},{en:"job",es:"trabajo"},{en:"meeting",es:"reunión"},{en:"problem",es:"problema"},{en:"idea",es:"idea"},{en:"question",es:"pregunta"},{en:"answer",es:"respuesta"},{en:"example",es:"ejemplo"},{en:"word",es:"palabra"},{en:"sentence",es:"oración"},{en:"letter",es:"carta"},{en:"number",es:"número"},{en:"map",es:"mapa"},{en:"music",es:"música"},{en:"movie",es:"película"},{en:"game",es:"juego"},{en:"sport",es:"deporte"},{en:"football",es:"fútbol"},{en:"basketball",es:"baloncesto"},{en:"tennis",es:"tenis"},{en:"clothes",es:"ropa"},{en:"shirt",es:"camisa"},{en:"pants",es:"pantalones"},{en:"shoes",es:"zapatos"},{en:"hat",es:"sombrero"},{en:"jacket",es:"chaqueta"},{en:"weather",es:"clima"},{en:"cloud",es:"nube"},{en:"fog",es:"niebla"},{en:"storm",es:"tormenta"},{en:"earthquake",es:"terremoto"},{en:"fire",es:"fuego"},{en:"accident",es:"accidente"},{en:"road",es:"carretera"},{en:"bridge",es:"puente"},{en:"corner",es:"esquina"},{en:"left",es:"izquierda"},{en:"right",es:"derecha"},{en:"straight",es:"derecho"},{en:"near",es:"cerca"},{en:"far",es:"lejos"},{en:"up",es:"arriba"},{en:"down",es:"abajo"},{en:"in",es:"en"},{en:"on",es:"sobre"},{en:"at",es:"en"},{en:"with",es:"con"},{en:"without",es:"sin"},{en:"for",es:"para"},{en:"to",es:"a"},{en:"from",es:"de"},{en:"about",es:"acerca de"},{en:"between",es:"entre"},{en:"under",es:"debajo"},{en:"over",es:"encima"},{en:"before",es:"antes"},{en:"after",es:"después"},{en:"during",es:"durante"},{en:"because",es:"porque"},{en:"but",es:"pero"},{en:"and",es:"y"},{en:"or",es:"o"},{en:"if",es:"si"},{en:"so",es:"entonces"},{en:"very",es:"muy"},{en:"too",es:"también"},{en:"also",es:"también"},{en:"only",es:"solo"},{en:"just",es:"solo"},{en:"more",es:"más"},{en:"less",es:"menos"},{en:"some",es:"algunos"},{en:"any",es:"cualquier"},{en:"many",es:"muchos"},{en:"much",es:"mucho"},{en:"a lot",es:"mucho"},{en:"enough",es:"suficiente"},{en:"all",es:"todo"},{en:"nothing",es:"nada"},{en:"everything",es:"todo"},{en:"something",es:"algo"},{en:"every",es:"cada"},{en:"other",es:"otro"},{en:"another",es:"otro"},{en:"each",es:"cada"},{en:"both",es:"ambos"},{en:"few",es:"pocos"},{en:"several",es:"varios"},{en:"such",es:"tal"},{en:"own",es:"propio"},{en:"same",es:"mismo"},{en:"different",es:"diferente"},{en:"whole",es:"todo"},{en:"part",es:"parte"},{en:"kind",es:"tipo"},{en:"way",es:"manera"},{en:"side",es:"lado"},{en:"top",es:"parte superior"},{en:"bottom",es:"fondo"},{en:"front",es:"frente"},{en:"back",es:"atrás"},{en:"inside",es:"dentro"},{en:"outside",es:"fuera"},{en:"middle",es:"medio"},{en:"center",es:"centro"},{en:"end",es:"fin"},{en:"beginning",es:"principio"},{en:"morning",es:"mañana (del día)"},{en:"hello",es:"hola"},{en:"goodbye",es:"adiós"},{en:"see you later",es:"hasta luego"},{en:"nice to meet you",es:"mucho gusto"},{en:"how are you?",es:"¿cómo estás?"},{en:"i am fine",es:"estoy bien"},{en:"what is your name?",es:"¿cómo te llamas?"},{en:"my name is",es:"me llamo"},{en:"where are you from?",es:"¿de dónde eres?"},{en:"i am from",es:"soy de"},{en:"how old are you?",es:"¿cuántos años tienes?"},{en:"i am years old",es:"tengo años"},{en:"do you speak english?",es:"¿hablas inglés?"},{en:"i don't understand",es:"no entiendo"},{en:"can you repeat?",es:"¿puedes repetir?"},{en:"what does it mean?",es:"¿qué significa?"},{en:"how do you say?",es:"¿cómo se dice?"},{en:"excuse me",es:"disculpe"},{en:"i'm sorry",es:"lo siento"},{en:"no problem",es:"no hay problema"},{en:"you're welcome",es:"de nada"},{en:"cheers",es:"salud"},{en:"congratulations",es:"felicidades"},{en:"good luck",es:"buena suerte"},{en:"have a nice day",es:"que tengas buen día"},{en:"take care",es:"cuídate"},{en:"i love you",es:"te amo"},{en:"i miss you",es:"te extraño"},{en:"see you soon",es:"nos vemos pronto"},
 ];
 
+const DICT_API_CACHE = new Map();
+
 function initDictionary() {
     const toggle = document.getElementById('btn-dict-toggle');
     const close = document.getElementById('btn-dict-close');
@@ -196,25 +198,81 @@ function initDictionary() {
     let debounceTimer;
     search.addEventListener('input', () => {
         clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => renderDictResults(search.value.trim()), 100);
+        if (search.value.trim()) {
+            debounceTimer = setTimeout(() => renderDictResults(search.value.trim()), 150);
+        } else {
+            renderDictResults('');
+        }
     });
 }
 
-function renderDictResults(query) {
+async function renderDictResults(query) {
     const results = document.getElementById('dict-results');
     if (!query) {
         results.innerHTML = '<div class="dict-empty">Escribe una palabra para buscar</div>';
         return;
     }
     const q = query.toLowerCase();
-    const matches = DICT.filter(e => e.en.includes(q) || e.es.includes(q));
-    if (!matches.length) {
-        results.innerHTML = '<div class="dict-empty">Sin resultados</div>';
+    const local = DICT.filter(e => e.en.includes(q) || e.es.includes(q)).slice(0, 50);
+
+    if (local.length) {
+        results.innerHTML = local.map(e =>
+            `<div class="dict-entry"><span class="dict-en">${escapeHtml(e.en)}</span><span class="dict-es">${escapeHtml(e.es)}</span></div>`
+        ).join('');
         return;
     }
-    results.innerHTML = matches.slice(0, 50).map(e =>
-        `<div class="dict-entry"><span class="dict-en">${escapeHtml(e.en)}</span><span class="dict-es">${escapeHtml(e.es)}</span></div>`
-    ).join('');
+
+    results.innerHTML = '<div class="dict-empty">Buscando en l&iacute;nea...</div>';
+
+    const cacheKey = q;
+    if (DICT_API_CACHE.has(cacheKey)) {
+        const entry = DICT_API_CACHE.get(cacheKey);
+        results.innerHTML = entry.map(e =>
+            `<div class="dict-entry"><span class="dict-en">${escapeHtml(e.en)}</span><span class="dict-es">${escapeHtml(e.es)}</span></div>`
+        ).join('');
+        return;
+    }
+
+    try {
+        const [transRes, dictRes] = await Promise.all([
+            fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(q)}&langpair=en|es`).then(r => r.json()).catch(() => null),
+            fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(q)}`).then(r => r.json()).catch(() => null)
+        ]);
+
+        const entries = [];
+
+        if (transRes && transRes.responseData && transRes.responseData.translatedText) {
+            const spanish = transRes.responseData.translatedText;
+            entries.push({ en: q, es: spanish, source: 'api' });
+        }
+
+        if (dictRes && Array.isArray(dictRes)) {
+            dictRes.slice(0, 2).forEach(entry => {
+                if (entry.meanings) {
+                    entry.meanings.forEach(m => {
+                        if (m.definitions) {
+                            m.definitions.slice(0, 2).forEach(d => {
+                                if (d.definition) {
+                                    entries.push({ en: q, es: `(${m.partOfSpeech}) ${d.definition}`, source: 'def' });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        if (entries.length) {
+            DICT_API_CACHE.set(cacheKey, entries);
+            results.innerHTML = entries.map(e =>
+                `<div class="dict-entry${e.source === 'api' ? ' dict-api' : ''}"><span class="dict-en">${escapeHtml(e.en)}</span><span class="dict-es">${escapeHtml(e.es)}</span></div>`
+            ).join('');
+        } else {
+            results.innerHTML = '<div class="dict-empty">Sin resultados</div>';
+        }
+    } catch {
+        results.innerHTML = '<div class="dict-empty">Error al buscar</div>';
+    }
 }
 
 // --- Navigation ---
