@@ -423,12 +423,16 @@ function initSpeechRecognition() {
             addChatMessage('user', text);
             trackVocabulary(text);
 
-            api.evaluateSpeech(text, expected).then(evaluation => {
-                displaySpeechEvaluation(evaluation);
-                state.speechResult = evaluation;
-            }).catch(() => {
-                document.getElementById('speech-feedback').textContent = 'Error al evaluar. Intenta de nuevo.';
-            });
+            if (state.structActive) {
+                handleStructuredSpeech(text);
+            } else {
+                api.evaluateSpeech(text, expected).then(evaluation => {
+                    displaySpeechEvaluation(evaluation);
+                    state.speechResult = evaluation;
+                }).catch(() => {
+                    document.getElementById('speech-feedback').textContent = 'Error al evaluar. Intenta de nuevo.';
+                });
+            }
         }, 2500);
     };
 
@@ -790,6 +794,46 @@ function showStructSummary(summary) {
             <span>Prom. palabras: ${summary.average_word_count}</span>
         </div>`;
     el.classList.remove('hidden');
+}
+
+async function handleStructuredSpeech(text) {
+    const expected = state.currentTopic ? state.currentTopic.key_phrases : [];
+    document.getElementById('speech-feedback').textContent = 'Evaluando...';
+    try {
+        const evaluation = await api.evaluateSpeech(text, expected);
+        displaySpeechEvaluation(evaluation);
+        state.speechResult = evaluation;
+    } catch {
+        document.getElementById('speech-feedback').textContent = 'Error al evaluar.';
+    }
+    document.getElementById('speech-result').classList.add('hidden');
+    try {
+        const resp = await api.structuredChat(
+            state.currentTopic.id, text,
+            state.structQuestion, state.structFollowUp, state.structResponses
+        );
+        state.structResponses = resp.responses;
+        if (resp.is_completed) {
+            state.structActive = false;
+            document.getElementById('structured-progress').classList.add('hidden');
+            showStructSummary(resp.summary);
+            addChatMessage('assistant', resp.content);
+            speak(resp.content);
+        } else {
+            state.structQuestion = resp.current_question;
+            state.structFollowUp = resp.follow_up_count || 0;
+            updateStructProgress();
+            showGrammarCorrection(resp.grammar_correction, resp.grammar_changes, resp.has_grammar_errors);
+            let label = resp.is_follow_up ? '[Seguimiento] ' : '';
+            addChatMessage('assistant', label + resp.content);
+            speak(resp.content);
+            if (resp.relevance) {
+                showRelevanceFeedback(resp.relevance);
+            }
+        }
+    } catch {
+        addChatMessage('assistant', 'Lo siento, hubo un error de conexi\u00f3n.');
+    }
 }
 
 function showRelevanceFeedback(relevance) {
